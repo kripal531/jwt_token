@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MyDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb"))); // loal db
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 var app = builder.Build();
 
