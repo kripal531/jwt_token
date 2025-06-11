@@ -27,6 +27,7 @@ namespace JwtTokenProject.Services
                 return null;
             var user = new User();
             user.UserName = request.UserName;
+            user.Roles = request.Roles;
             user.PasswordHash = new PasswordHasher<User>().HashPassword(user, request.Password);
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
@@ -51,7 +52,9 @@ namespace JwtTokenProject.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name,user.UserName)
+                new Claim(ClaimTypes.Name,user.UserName),
+                new Claim(ClaimTypes.Role,user.Roles),
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString())
 
             };
             var key = new SymmetricSecurityKey(

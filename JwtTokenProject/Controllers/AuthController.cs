@@ -1,6 +1,7 @@
 ﻿using JwtTokenProject.Entity;
 using JwtTokenProject.Model;
 using JwtTokenProject.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -13,20 +14,21 @@ using System.Threading.Tasks;
 
 namespace JwtTokenProject.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthServices Services ;
+        private readonly IAuthServices Services;
         public AuthController(IAuthServices Services)
         {
-            this.Services= Services;
+            this.Services = Services;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<User?>> Register(UserDto request)
         {
-           var user = await Services.RegisterAsync(request);
+            var user = await Services.RegisterAsync(request);
             if (user == null)
                 return BadRequest("user already exists");
             return Ok(user);
@@ -39,9 +41,22 @@ namespace JwtTokenProject.Controllers
             if (token is null)
                 return BadRequest("user not found");
             return Ok(token);
-            
+
+        }
+        [HttpGet("Auth-endpoint")]
+        [Authorize]
+        public ActionResult Authcheck()
+        {
+            return Ok();
         }
 
-     
+        [HttpGet("Admin-endpoint")]
+        [Authorize(Roles ="Admin,User")]
+        public ActionResult admin()
+        {
+            return Ok();
+        }
+
+
     }
 }
