@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace JwtTokenProject.Controllers
 {
-   
+   // [ApiExplorerSettings(GroupName = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
