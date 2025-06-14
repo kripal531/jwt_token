@@ -17,10 +17,14 @@ namespace ProductService.Controllers
             
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetProduct()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProduct(int id)
         {
-            var data = await _applicationDbContext.Products.ToListAsync();
+            var data = await _applicationDbContext.Products.FindAsync(id);
+            if (data == null) 
+            {
+                return NotFound("Product not found");
+            }
             return Ok(data);
         }
         [HttpPost]

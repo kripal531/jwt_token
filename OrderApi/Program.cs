@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OrderApi.data;
+using OrderApi.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,15 +11,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<OrderDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb")));
+builder.Services.AddHttpClient<ProductServiceClient>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+app.MapGet("/", () => Results.Redirect("/swagger"));
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

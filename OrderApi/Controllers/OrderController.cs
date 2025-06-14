@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrderApi.data;
 using OrderApi.model;
+using OrderApi.ProductService;
 
 namespace OrderApi.Controllers
 {
@@ -10,26 +11,39 @@ namespace OrderApi.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
+       // private readonly OrderDbContext _db;
+       private readonly ProductServiceClient _productClient;
         private readonly OrderDbContext _db;
-        public OrderController(OrderDbContext context)
+        public OrderController(ProductServiceClient productService, OrderDbContext db)
         {
-            this._db = context;
+            _productClient = productService;
+            _db = db;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("place/{productId}/{qty}")]
+
+        public async Task<IActionResult> PlacrOrder(int productId, int qty) 
         {
-            var orders = await _db.Orders.ToListAsync();
-            return Ok(orders);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Create(Order order) 
-        {
-            order.OrderDate = DateTime.Now;
-            await _db.Orders.AddAsync(order);
-            await _db.SaveChangesAsync();
+            var product = await _productClient.GetProductById(productId);
+            if (product == null)
+            {
+                return NotFound("product not found");
+            }
+            var order= new Order
+            {
+                Id= new Random().Next(1, 1000),
+                ProductId = productId,
+                ProductName= product.ProductName,
+                Quantity = qty,
+                OrderDate = DateTime.Now
+                
+            };
+            var total = product.ProductPrice * qty;
+
+
             return Ok(order);
         }
+       
     }
 
 }
