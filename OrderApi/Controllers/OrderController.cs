@@ -31,7 +31,7 @@ namespace OrderApi.Controllers
             }
             var order= new Order
             {
-                Id= new Random().Next(1, 1000),
+               // Id= new Random().Next(1, 1000),
                 ProductId = productId,
                 ProductName= product.ProductName,
                 Quantity = qty,
@@ -39,7 +39,9 @@ namespace OrderApi.Controllers
                 
             };
             var total = product.ProductPrice * qty;
-
+            await _db.Orders.AddAsync(order);
+            await _db.SaveChangesAsync();
+               
 
             return Ok(order);
         }
